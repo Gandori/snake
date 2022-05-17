@@ -18,7 +18,7 @@ const fruit_colors = ["red", "yellow", "purple", "green"];
 const user_input = {up_key:false, down_key:false, left_key:false, right_key:false}
 
 var fruit = true;
-var game_speed = 400;
+var game_speed = 1000/7;
 var snake_speed = snake_part_size;
 
 function main()
