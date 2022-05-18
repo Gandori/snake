@@ -17,6 +17,7 @@ snakehead.style.left = snakehead_pos.x + "px";
 const fruit_colors = ["red", "yellow", "purple", "green"];
 const user_input = {up_key:false, down_key:false, left_key:false, right_key:false}
 
+var last_direction;
 var fruit = true;
 var game_speed = 1000/7;
 var snake_speed = snake_part_size;
@@ -34,20 +35,30 @@ function main()
             for(key in user_input){user_input[key] = false;};
         };
         switch(e.keyCode) {
-            case 37:user_input.left_key = true;break; //left keybreak
-            case 38:user_input.up_key = true;break;//up keybreak
-            case 39:user_input.right_key = true;break;//right key
-            case 40:user_input.down_key = true;break;//down key
-        };
+            case 37: //left key
+            	if(last_direction==39){user_input.right_key=true;break;};
+  			user_input.left_key = true;last_direction=37;break;
+            case 38: //up key
+            	if(last_direction==40){user_input.down_key=true;break;};
+            	user_input.up_key=true;last_direction=38;break;
+            case 39: //right key
+            	if(last_direction==37){user_input.left_key=true;break;};
+            	user_input.right_key=true;last_direction=39;break;
+            case 40: //down key
+            	if(last_direction==38){user_input.up_key=true;break;};
+            	user_input.down_key=true;last_direction=40;break;
+	   };
     });
 
-    //random start direction
-    switch(Math.floor(Math.random() * 4) +1){
-        case 1:user_input.up_key = true;break;
-        case 2:user_input.down_key = true;break;
-        case 3:user_input.left_key = true;break;
-        case 4:user_input.right_key = true;break;
-    };
+	//random start direction
+	if(Math.random() < 0.5 == true){user_input.left_key=true;last_direction=37;}
+	else if (Math.random() < 0.5 == true){user_input.up_key=true;last_direction=38;}
+	else if (Math.random() < 0.5 == true){user_input.right_key=true;last_direction=39;}
+	else if (Math.random() < 0.5 == true){user_input.down_key=true;last_direction=40;}
+	else{user_input.up_key = true;};
+
+	//create first snake part
+	create_new_snake_part()
 
     //mainloop
     interval = setInterval(function()
@@ -122,7 +133,7 @@ function spawn_fruit()
 
         rng = Math.floor(Math.random() *(board_size - snake_part_size)) +0;
         fruit.style.left = Math.round(rng/snake_part_size) *snake_part_size + "px";
-       
+
         fruit.style.position = "absolute";
 
         rng = Math.floor(Math.random() *fruit_colors.length) +0;
@@ -133,7 +144,7 @@ function spawn_fruit()
 
 function snakehead_on_fruit_position()
 {
-    if (snakehead_pos.y == parseInt(fruit.style.top) && 
+    if (snakehead_pos.y == parseInt(fruit.style.top) &&
         snakehead_pos.x == parseInt(fruit.style.left))
     {
         fruit.remove();
@@ -158,24 +169,24 @@ function death()
 {
     let death_position = {a:board_size, b:0-snake_part_size}
     let a;
-    
+
     switch(snakehead_pos.y){
-        case death_position.a: a = true; break;
-        case death_position.b: a = true; break;
-    };
-    
-    switch(snakehead_pos.x){
-        case death_position.a: a = true; break;
-        case death_position.b: a = true; break;
+        case death_position.a: a = true; break; //bottom board
+        case death_position.b: a = true; break; //top board
     };
 
-    snake.forEach(element => {
+    switch(snakehead_pos.x){
+        case death_position.a: a = true; break; //right board
+        case death_position.b: a = true; break; //left board
+    };
+
+    snake.forEach(element => { //snakehead on snakepart position
         let x = parseInt(element.style.left);
         let y = parseInt(element.style.top);
         if(snakehead_pos.y == y && snakehead_pos.x == x) a = true;
     });
 
-    if(a == true) create_message() ,clearInterval(interval);
+    if(a == true){create_message(); clearInterval(interval);};
 };
 
 function create_message()
