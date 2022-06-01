@@ -9,13 +9,19 @@
 </head>
 <body>
     <div id="startpage">
-        <h1>SNAKE</h1>
+        <h1></h1>
+        <h5></h5>
         <button onclick="main()">play</button>
     </div>
 
-    <div id="board">
-        <div id="snakehead"></div>
+    <div id="board_container">
+        <div id="board_header">
+            <label id="time">Time: 0</label>
+            <label id="score">Score: 0</label>
+        </div>
+        <div id="board"></div>
     </div>
+
     <script src="index.js"></script>
 </body>
 </html>
